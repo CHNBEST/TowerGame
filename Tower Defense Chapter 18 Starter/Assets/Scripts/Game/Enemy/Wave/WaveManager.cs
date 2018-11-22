@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections.Generic;
+
 
 public class WaveManager : MonoBehaviour
 {
@@ -65,9 +65,7 @@ public class WaveManager : MonoBehaviour
                 if (activeWave.listOfEnemies.Count != 0)
                 {
                     //4
-                    GameObject enemy = (GameObject)Instantiate(
-                    activeWave.listOfEnemies[0], WayPointManager.Instance.
-                    GetSpawnPosition(activeWave.pathIndex), Quaternion.identity);
+                    GameObject enemy = (GameObject)Instantiate(activeWave.listOfEnemies[0], WayPointManager.Instance.GetSpawnPosition(activeWave.pathIndex), Quaternion.identity);
                     //5
                     enemy.GetComponent<Enemy>().pathIndex = activeWave.pathIndex;
                     //6
