@@ -61,6 +61,9 @@ public class WaveManager : MonoBehaviour
             if (spawnCounter >= activeWave.timeBetweenSpawnsInSeconds)
             {
                 spawnCounter = 0f;
+
+                GameManager.Instance.waveNumber++;
+
                 //3
                 if (activeWave.listOfEnemies.Count != 0)
                 {
@@ -78,6 +81,8 @@ public class WaveManager : MonoBehaviour
                     //8
                     if (activatedWaves.Count == enemyWaves.Count)
                     {
+
+                        GameManager.Instance.enemySpawningOver = true;
                         // All waves are over
                     }
                 }
