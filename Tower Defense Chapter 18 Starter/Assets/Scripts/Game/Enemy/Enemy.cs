@@ -27,7 +27,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -40,7 +39,12 @@ public class Enemy : MonoBehaviour
     public int pathIndex = 0;
 
     private int wayPointIndex = 0;
-
+    //1
+    public float timeEnemyStaysFrozenInSeconds = 2f;
+    //2
+    public bool frozen;
+    //3
+    private float freezeTimer;
 
     void Start()
     {
@@ -60,6 +64,7 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             DropGold();
+            Die();
         }
     }
 
@@ -67,6 +72,7 @@ public class Enemy : MonoBehaviour
     {
         GameManager.Instance.gold += goldDrop;
     }
+
 
     void Die()
     {
@@ -81,41 +87,65 @@ public class Enemy : MonoBehaviour
             //4
             Destroy(gameObject, 0.3f);
         }
+    }
 
+    //1
+    public void Freeze()
+    {
+        if (!frozen)
+        {
+            //2
+            frozen = true;
+            moveSpeed /= 2;
+        }
+    }
+
+    //3
+    void Defrost()
+    {
+        freezeTimer = 0f;
+        frozen = false;
+        moveSpeed *= 2;
     }
 
     void Update()
     {
-       
-        if (wayPointIndex <
-        WayPointManager.Instance.Paths[pathIndex].WayPoints.Count)
+        //1
+        if (wayPointIndex < WayPointManager.Instance.Paths[pathIndex].WayPoints.Count)
         {
             UpdateMovement();
-            
-        }
+        } //2
         else
-        { 
+        {
             OnGotToLastWayPoint();
         }
+
+        //1
+        if (frozen)
+        {
+            //2
+            freezeTimer += Time.deltaTime;
+            //3
+            if (freezeTimer >= timeEnemyStaysFrozenInSeconds)
+            {
+                Defrost();
+            }
+        }
     }
+
     private void UpdateMovement()
     {
-      
-        Vector3 targetPosition =
-        WayPointManager.Instance.Paths[pathIndex]
-        .WayPoints[wayPointIndex].position;
-      
-        transform.position = Vector3.MoveTowards(
-        transform.position, targetPosition,
-        moveSpeed * Time.deltaTime);
-
+        //3
+        Vector3 targetPosition = WayPointManager.Instance.Paths[pathIndex].WayPoints[wayPointIndex].position;
+        //4
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition
+            , moveSpeed * Time.deltaTime);
+        //5
         transform.localRotation = UtilityMethods.SmoothlyLook(transform, targetPosition);
-
-
+        //6
         if (Vector3.Distance(transform.position, targetPosition) < .1f)
         {
             wayPointIndex++;
         }
     }
-
 }

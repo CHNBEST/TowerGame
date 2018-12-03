@@ -1,11 +1,38 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2018 Razeware LLC
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * Notwithstanding the foregoing, you may not use, copy, modify, merge, publish, 
+ * distribute, sublicense, create a derivative work, and/or sell copies of the 
+ * Software in any work that is designed, intended, or marketed for pedagogical or 
+ * instructional purposes related to programming, coding, application development, 
+ * or information technology.  Permission for such use, copying, modification,
+ * merger, publication, distribution, sublicensing, creation of derivative works, 
+ * or sale is expressly withheld.
+ *    
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 using UnityEngine;
-
+using System.Collections;
+using System.Collections.Generic;
 
 public class WaveManager : MonoBehaviour
 {
-
     //1
     public static WaveManager Instance;
     //2
@@ -18,7 +45,6 @@ public class WaveManager : MonoBehaviour
     private float spawnCounter = 0f;
     //6
     private List<EnemyWave> activatedWaves = new List<EnemyWave>();
-    // Use this for initialization
 
     //1
     void Awake()
@@ -29,6 +55,7 @@ public class WaveManager : MonoBehaviour
     void Update()
     {
         elapsedTime += Time.deltaTime;
+
         SearchForWave();
         UpdateActiveWave();
     }
@@ -38,14 +65,16 @@ public class WaveManager : MonoBehaviour
         foreach (EnemyWave enemyWave in enemyWaves)
         {
             //4
-            if (!activatedWaves.Contains(enemyWave)
-            && enemyWave.startSpawnTimeInSeconds <= elapsedTime)
+            if (!activatedWaves.Contains(enemyWave) && enemyWave.startSpawnTimeInSeconds <= elapsedTime)
             {
+                // Activate next wave
                 //5
                 activeWave = enemyWave;
                 activatedWaves.Add(enemyWave);
                 spawnCounter = 0f;
+                GameManager.Instance.waveNumber++;
                 //6
+                UIManager.Instance.ShowCenterWindow("Wave " + GameManager.Instance.waveNumber);
                 break;
             }
         }
@@ -57,12 +86,11 @@ public class WaveManager : MonoBehaviour
         if (activeWave != null)
         {
             spawnCounter += Time.deltaTime;
+
             //2
             if (spawnCounter >= activeWave.timeBetweenSpawnsInSeconds)
             {
                 spawnCounter = 0f;
-
-                GameManager.Instance.waveNumber++;
 
                 //3
                 if (activeWave.listOfEnemies.Count != 0)
@@ -81,7 +109,6 @@ public class WaveManager : MonoBehaviour
                     //8
                     if (activatedWaves.Count == enemyWaves.Count)
                     {
-
                         GameManager.Instance.enemySpawningOver = true;
                         // All waves are over
                     }
@@ -96,15 +123,7 @@ public class WaveManager : MonoBehaviour
         spawnCounter = 0;
         activeWave = null;
         activatedWaves.Clear();
+
         enabled = false;
     }
-
-    void Start ()
-    {
-		
-	}
-	
-	// Update is called once per frame
-	
-
 }
